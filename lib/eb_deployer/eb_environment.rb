@@ -46,7 +46,7 @@ module EbDeployer
                                nil,
                                configured_tier,
                                only_prep_settings,
-                               template_name)
+                               template_name) { |env| nil } # we need to pass a block... we don't do anything with it yet
       end
       # not waiting - just config and exit so we can let the scale up happen in the background
       #
