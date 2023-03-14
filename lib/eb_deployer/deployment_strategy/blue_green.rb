@@ -14,6 +14,16 @@ module EbDeployer
         end
       end
 
+      def prep_for_deploy(env_settings)
+        if !ebenvs.any?(&method(:active_ebenv?)) # nothing to scale up
+          return
+        end
+        # active_ebenv = ebenvs.detect(&method(:active_ebenv?))
+        inactive_ebenv = ebenvs.reject(&method(:active_ebenv?)).first
+
+        inactive_ebenv.prep_for_deploy(env_settings)
+      end
+
       def deploy(version_label, env_settings, inactive_settings=[])
 
         if !ebenvs.any?(&method(:active_ebenv?))

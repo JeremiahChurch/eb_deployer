@@ -237,6 +237,37 @@ module EbDeployer
     application.clean_versions(version_prefix, opts[:keep_latest].to_i || 0)
   end
 
+  def self.prep_for_deploy(opts)
+    if region = opts[:region]
+      Aws.config.update(:region => region)
+    end
+
+    bs = opts[:bs_driver] || AWSDriver::Beanstalk.new
+    bs = ThrottlingHandling.new(bs, Aws::ElasticBeanstalk::Errors::Throttling)
+    s3 = opts[:s3_driver] || AWSDriver::S3Driver.new
+    cf = opts[:cf_driver] || AWSDriver::CloudFormationDriver.new
+
+    app_name = opts[:application]
+    env_name = opts[:environment]
+
+    application = Application.new(app_name, bs, s3, opts[:package_bucket])
+    resource_stacks = ResourceStacks.new(opts[:resources],
+                                         cf,
+                                         !!opts[:skip_resource_stack_update],
+                                         opts[:tags])
+
+    stack_name = opts[:stack_name] || "#{app_name}-#{env_name}"
+
+    environment = Environment.new(application, env_name, stack_name, bs) do |env|
+      env.resource_stacks = resource_stacks
+      env.settings = opts[:option_settings] || opts[:settings] || []
+      env.strategy_name = :blue_green
+      env.components = opts[:components]
+      env.component_under_deploy = opts[:component]
+    end
+    environment.prep_for_deploy
+  end
+
   def self.destroy(opts)
     if region = opts[:region]
       Aws.config.update(:region => region)

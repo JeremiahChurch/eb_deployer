@@ -33,6 +33,27 @@ module EbDeployer
       wait_for_env_become_healthy
     end
 
+    # scales the inactive instance to match the new config values so the deploy happens faster (and actually succeeds when we need more than 1 instance)
+    # this is run a few minutes before we call deploy. before we package specifically
+    def prep_for_deploy(settings={})
+      # [{:namespace=>"aws:autoscaling:asg", :option_name=>"MinSize", :value=>"1"}, {:namespace=>"aws:autoscaling:asg", :option_name=>"MaxSize", :value=>"1"}]
+      # we need to make maxsize at least minsize - this is for the inactive environment but hte settings are from the active environment
+      # essentially we scale the inactive environment to at least the minimum for the prod environment
+      only_prep_settings = (settings).select {|s| s[:namespace] == "aws:autoscaling:asg"}
+      if @bs.environment_exists?(@app, @name)
+        @bs.update_environment(@app,
+                               @name,
+                               nil,
+                               configured_tier,
+                               only_prep_settings,
+                               template_name)
+      end
+      # not waiting - just config and exit so we can let the scale up happen in the background
+      #
+      # smoke_test
+      # wait_for_env_become_healthy
+    end
+
     def apply_settings(settings)
       raise "Env #{self.name} not exists for applying settings" unless @bs.environment_exists?(@app, @name)
       wait_for_env_status_to_be_ready

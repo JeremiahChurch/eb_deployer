@@ -16,6 +16,10 @@ module EbDeployer
       @strategy.deploy(version_label, eb_settings, inactive_settings)
     end
 
+    def prep_for_deploy(eb_settings)
+      @strategy.prep_for_deploy(eb_settings)
+    end
+
     def new_eb_env(suffix=nil, cname_prefix_overriding=nil)
       EbEnvironment.new(@env.app_name,
                         [@env.name, suffix].compact.join('-'),

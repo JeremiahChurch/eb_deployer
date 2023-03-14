@@ -34,6 +34,13 @@ module EbDeployer
       end
     end
 
+    def prep_for_deploy
+      resource_settings = @resource_stacks.provision(@stack_name)
+      components_to_deploy.each do |component|
+        component.prep_for_deploy(@settings + resource_settings)
+      end
+    end
+
     def components=(components_attrs)
       return unless components_attrs
       @components = components_attrs.map do |attrs|

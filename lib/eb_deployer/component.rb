@@ -1,6 +1,6 @@
 module EbDeployer
   class Component
-    attr_reader :name
+    attr_reader :name, :strategy_name
 
     def initialize(name, env, options, eb_driver)
       @name = name
@@ -9,7 +9,7 @@ module EbDeployer
       @options = options.dup
       @component_eb_settings = @options.delete(:option_settings) || []
       @component_inactive_settings = @options.delete(:inactive_settings) || []
-      strategy_name = @options[:strategy] || @env.strategy_name
+      @strategy_name = @options[:strategy] || @env.strategy_name
       @strategy = DeploymentStrategy.create(self, strategy_name)
     end
 
@@ -22,6 +22,11 @@ module EbDeployer
       @strategy.deploy(version_label,
                        eb_settings + @component_eb_settings,
                        inactive_settings + @component_inactive_settings)
+    end
+
+    def prep_for_deploy(eb_settings)
+      raise "prep_for_deploy not supported for requested strategy #{strategy_name}" unless @strategy.respond_to?(:prep_for_deploy)
+      @strategy.prep_for_deploy(eb_settings + @component_eb_settings)
     end
 
     def new_eb_env(suffix=nil, cname_prefix_overriding=nil)
