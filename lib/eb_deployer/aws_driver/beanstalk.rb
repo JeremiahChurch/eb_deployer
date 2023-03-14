@@ -34,9 +34,9 @@ module EbDeployer
           :tier => environment_tier(tier),
           :template_name => template_name
         })
-        puts "request for update environment: ----------------------"
-        puts request.inspect
-        puts "end request for update environment: ------------------"
+        # puts "request for update environment: ----------------------"
+        # puts request.inspect
+        # puts "end request for update environment: ------------------"
         @client.update_environment(request)
       end
 
