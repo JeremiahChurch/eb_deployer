@@ -22,3 +22,4 @@ blocks:
         always:
           commands:
             - test-results publish junit.xml
+            - test-results gen-pipeline-report
