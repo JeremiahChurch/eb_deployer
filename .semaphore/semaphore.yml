@@ -21,4 +21,5 @@ blocks:
       epilogue:
         always:
           commands:
-            # - test-results publish junit.xml
+            - bundle exec rake test TESTOPTS="--runner=junitxml --junitxml-output-file=junit.xml"
+

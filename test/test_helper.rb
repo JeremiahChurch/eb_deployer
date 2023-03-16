@@ -3,6 +3,7 @@ $:.unshift(File.expand_path("../../lib", __FILE__))
 require 'tempfile'
 require 'eb_deployer'
 require 'aws_driver_stubs'
+require "test/unit/runner/junitxml"
 require 'test/unit'
 
 def silence_warnings(&block)
