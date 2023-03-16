@@ -29,6 +29,7 @@ require 'eb_deployer/package'
 require 'eb_deployer/config_loader'
 require 'eb_deployer/default_config'
 require 'eb_deployer/smoke_test'
+require 'eb_deployer/inactive_smoke_test'
 require 'eb_deployer/version_cleaner'
 
 module EbDeployer

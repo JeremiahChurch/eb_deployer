@@ -89,6 +89,11 @@ module EbDeployer
       @bs.environment_health_state(@app, @name)
     end
 
+    def inactive_smoke_test(settings)
+      host_name = @bs.environment_cname(@app, @name)
+      InactiveSmokeTest.new(@creation_opts[:inactive_smoke_test], settings).run(host_name, self)
+    end
+
     private
 
     def configured_tier
