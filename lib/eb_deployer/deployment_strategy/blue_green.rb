@@ -69,6 +69,7 @@ module EbDeployer
         unless inactive_settings.empty? || blue_green_terminate_inactive
           active_ebenv.log("applying inactive settings...")
           active_ebenv.apply_settings(inactive_settings)
+          active_ebenv.inactive_smoke_test(inactive_settings)
         end
       end
 

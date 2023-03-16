@@ -4,6 +4,7 @@ require 'tempfile'
 require 'eb_deployer'
 require 'aws_driver_stubs'
 require 'test/unit'
+require 'pry'
 
 def silence_warnings(&block)
   old_verbose, $VERBOSE = $VERBOSE, nil
