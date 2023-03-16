@@ -17,9 +17,8 @@ blocks:
             - cache restore
             - bundle install
             - cache store
-            - bundle exec rake test
+            - bundle exec rake test TESTOPTS="--runner=junitxml --junitxml-output-file=junit.xml"
       epilogue:
         always:
           commands:
-            - bundle exec rake test TESTOPTS="--runner=junitxml --junitxml-output-file=junit.xml"
-
+            - test-results publish junit.xml
