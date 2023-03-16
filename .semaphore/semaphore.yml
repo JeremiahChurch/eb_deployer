@@ -10,15 +10,15 @@ blocks:
       jobs:
         - name: tests
           commands:
-            - checkout
             - ruby --version
             - gem --version
             - bundle --version
+            - checkout
             - cache restore
             - bundle install --deployment --path vendor/bundle
             - cache store
-            - 'bundle exec rake test # --junit'
+            - bundle exec rake test
       epilogue:
         always:
           commands:
-            - '# test-results publish junit.xml'
+            # - test-results publish junit.xml
