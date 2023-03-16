@@ -1,0 +1,25 @@
+version: v1.0
+name: Ruby
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+blocks:
+  - name: minitest
+    task:
+      jobs:
+        - name: tests
+          commands:
+            - ruby --version
+            - gem --version
+            - bundle --version
+            - checkout
+            - cache restore
+            - bundle install
+            - cache store
+            - bundle exec rake test TESTOPTS="--runner=junitxml --junitxml-output-file=junit.xml"
+      epilogue:
+        always:
+          commands:
+            - test-results publish junit.xml
+            - test-results gen-pipeline-report
